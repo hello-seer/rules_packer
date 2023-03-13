@@ -1,0 +1,23 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+
+alias(
+    name = "bazelrc",
+    actual = "//tools/bazel:gen_bazelrc",
+)
+
+alias(
+    name = "format",
+    actual = "//tools/lint:format",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@helloseer/rules-packer",
+)
+
+js_library(
+    name = "prettier_config",
+    srcs = [".prettierrc.yml"],
+    root = ":root",
+)

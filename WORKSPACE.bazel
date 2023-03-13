@@ -1,0 +1,130 @@
+workspace(name = "rules_packer")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
+
+# Skylib
+
+SKYLIB_VERSION = "16de038c484145363340eeaf0e97a0c9889a931b"
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "96e0cd3f731f0caef9e9919aa119ecc6dace36b149c2f47e40aa50587790402b",
+    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
+    url = "https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION,
+)
+
+# Python
+
+PYTHON_VERSION = "ad0b8f8c80516e49f3871164da7aba927b222133"
+
+http_archive(
+    name = "rules_python",
+    sha256 = "d8bdaa73ec01534c298f4d0cd8e5d3203d2be53687aee9dbab2e1cd497c3cc2d",
+    strip_prefix = "rules_python-%s" % PYTHON_VERSION,
+    url = "https://github.com/bazelbuild/rules_python/archive/%s.zip" % PYTHON_VERSION,
+)
+
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+python_register_toolchains(
+    name = "python3_10",
+    python_version = "3.10",
+)
+
+# Go
+
+GO_VERSION = "0.34.0"
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "9c44b54c51ca9aafb73e9dd9e71514cde7679b6cd165bf33abde847504a778ba",
+    strip_prefix = "rules_go-%s" % GO_VERSION,
+    url = "https://github.com/bazelbuild/rules_go/archive/v%s.zip" % GO_VERSION,
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.17.2")
+
+# Gazelle
+
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "501deb3d5695ab658e82f6f6f549ba681ea3ca2a5fb7911154b5aa45596183fa",
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
+    ],
+)
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE.bazel")
+
+# Javascript
+
+JAVASCRIPT_VERSION = "f11209dbbd374c1833ade3eeb97e7ad37f1fadd4"
+
+http_archive(
+    name = "better_rules_javascript",
+    sha256 = "03b045c78665b9c3c19e6e311a360687ccd97f5e7149ed0077feae0a81d26f82",
+    strip_prefix = "rules_javascript-%s" % JAVASCRIPT_VERSION,
+    url = "https://github.com/hello-seer/rules_javascript/archive/%s.tar.gz" % JAVASCRIPT_VERSION,
+)
+
+load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
+
+javascript_repositories()
+
+# Protobuf
+
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "3bd7828aa5af4b13b99c191e8b1e884ebfa9ad371b0ce264605d347f135d2568",
+    strip_prefix = "protobuf-3.19.4",
+    url = "https://github.com/protocolbuffers/protobuf/archive/v3.19.4.tar.gz",
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+# Files
+
+FILE_VERSION = "76fe7aebcf6c77df8b9037682d38083ac6bd4cd6"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "b9f0477bda50c6773e8a09cc5cb6a25f3fa8f9736cb7f8764dd14447ab35c8e8",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
+)
+
+load("@rules_file//rules:init.bzl", "file_init")
+
+file_init()
+
+load("@rules_file//rules:workspace.bzl", "file_repositories")
+
+file_repositories()
+
+# Buildifier
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "ae34c344514e08c23e90da0e2d6cb700fcd28e80c02e23e4d5715dddcb42f7b3",
+    strip_prefix = "buildtools-4.2.2",
+    url = "https://github.com/bazelbuild/buildtools/archive/refs/tags/4.2.2.tar.gz",
+)
+
+# Rules Packer
+
+load("//tools/file:workspace.bzl", "file_repositories")
+
+file_repositories()
+
+load("//tools/npm:workspace.bzl", "npm_repositories")
+
+npm_repositories()

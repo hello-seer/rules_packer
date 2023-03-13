@@ -1,0 +1,24 @@
+# Startup
+startup --host_jvm_args=-Xmx1024m
+
+# Files
+import %workspace%/tools/bazel/deleted.bazelrc
+
+# Cache
+build --disk_cache ~/.cache/bazel-disk
+clean --disk_cache ~/.cache/bazel-disk
+fetch --disk_cache ~/.cache/bazel-disk
+info --disk_cache ~/.cache/bazel-disk
+query --disk_cache ~/.cache/bazel-disk
+sync --disk_cache ~/.cache/bazel-disk
+
+# Build
+build -k
+build --nocheck_visibility
+
+# Test
+build --nozip_undeclared_test_outputs
+build --test_output=all
+
+# User settings
+try-import %workspace%/user.bazelrc
